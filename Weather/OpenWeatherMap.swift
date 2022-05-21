@@ -27,9 +27,29 @@ class OpenWeatherMap: ObservableObject {
     }
     
     ///
+    /// This function is used for searching cities.
+    ///
+    func search(_ query: String, _ action: @escaping (_ response: [Geocode]) -> Void) {
+        let parameters: [String: String] = [
+            "q": query,
+            "limit": String(5),
+            "appid": API_KEY
+        ]
+        
+        AF.request(ENDPOINT + "/geo/1.0/direct", parameters: parameters).responseDecodable(of: [Geocode].self) {
+            response in
+            debugPrint(response)
+
+            guard let cities: [Geocode] = response.value else {return }
+            debugPrint("ran the geo search")
+            action(cities)
+        }
+    }
+    
+    ///
     /// This function is used to fetch the temperature for a given city with coordinates.
     ///
-    func getWeather(lat: Double, lon: Double, format: TemperatureFormat) {
+    func getWeather(lat: Double, lon: Double, format: TemperatureFormat, _ action: @escaping (City) -> Void) {
         let parameters: [String: String] = [
             "lat": String(lat),
             "lon": String(lon),
@@ -40,7 +60,8 @@ class OpenWeatherMap: ObservableObject {
         AF.request(ENDPOINT + "/data/2.5/weather", parameters: parameters).responseDecodable(of: City.self) {
             response in
             guard let city = response.value else {return }
-            self.cities.append(city)
+            action(city)
+            
         }
     }
     
@@ -53,7 +74,9 @@ class OpenWeatherMap: ObservableObject {
          
         copyOfCities.forEach { city in
             //getWeather(lat: 61.4980214, lon: 23.7603118, format: unit)
-            getWeather(lat: city.coord.lat, lon: city.coord.lon, format: unit)
+            getWeather(lat: city.coord.lat, lon: city.coord.lon, format: unit) { city in
+                self.cities.append(city)
+            }
         }
     }
     
