@@ -11,7 +11,6 @@ struct WeatherView : View {
     @State private var editMode = EditMode.inactive
     @State private var isAddCitySheetOpen = false
     @ObservedObject var api: OpenWeatherMap
-    @Binding var unit: OpenWeatherMap.TemperatureFormat
     
     var body : some View {
         NavigationView {
@@ -24,7 +23,7 @@ struct WeatherView : View {
                 } else {
                     List {
                         ForEach($api.cities) {city in
-                            CityCard(city: city, unit: $unit)
+                            CityCard(city: city, unit: $api.unit)
                         }
                         .onDelete(perform: onDelete)
                     }

@@ -12,7 +12,7 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
-            WeatherView(api: api, unit: $api.unit)
+            WeatherView(api: api)
                 .tabItem {
                     Image(systemName: "sun.min")
                     Text("Weather")
