@@ -78,7 +78,6 @@
 				033C59BF2836888D00A64A30 /* ContentView.swift */,
 				033C59C12836889000A64A30 /* Assets.xcassets */,
 				033C59C32836889000A64A30 /* Preview Content */,
-				03C9077228378F1C00D7148E /* City.swift */,
 				03C90774283791C700D7148E /* WeatherView.swift */,
 				03C9077C2839033000D7148E /* CityCard.swift */,
 				03553F042839186E007BA41D /* SearchSheet.swift */,
@@ -98,6 +97,7 @@
 		03553F0828391D95007BA41D /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				03C9077228378F1C00D7148E /* City.swift */,
 				03553F0928391DA2007BA41D /* Geocode.swift */,
 			);
 			path = Models;
@@ -117,7 +117,6 @@
 				68AB703C765B77D050DEE066 /* Pods-Weather.debug.xcconfig */,
 				5BB0E48F854C839E4F038E2D /* Pods-Weather.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
