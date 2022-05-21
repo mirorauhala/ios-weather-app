@@ -10,58 +10,50 @@ import SwiftUI
 struct WeatherView : View {
     @State private var editMode = EditMode.inactive
     @State private var isAddCitySheetOpen = false
-    @State private var search = ""
-    @State private var searchResults: [City] = []
-
-    @Binding var cities: [City]
+    @ObservedObject var api: OpenWeatherMap
     @Binding var unit: OpenWeatherMap.TemperatureFormat
     
     var body : some View {
         NavigationView {
             VStack {
-                if $cities.isEmpty {
+                if $api.cities.isEmpty {
                     Text("Add a city")
                         .foregroundColor(.secondary)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .background(Color(.systemGroupedBackground))
                 } else {
                     List {
-                        ForEach($cities) {city in
+                        ForEach($api.cities) {city in
                             CityCard(city: city, unit: $unit)
                         }
                         .onDelete(perform: onDelete)
-                        .onMove(perform: onMove)
                     }
-                    
-                    
                 }
             }
-            
             .navigationBarTitle("Weather")
             .navigationBarItems(leading: editButton, trailing: addButton)
             .environment(\.editMode, $editMode)
             .sheet(isPresented: $isAddCitySheetOpen) {
-                SearchSheet(search: $search, searchResults: $searchResults)
+                SearchSheet(api: api, isPresented: $isAddCitySheetOpen)
             }
         }
     }
     
+    /// This function deletes cities from the list
     private func onDelete(offsets: IndexSet) {
-        cities.remove(atOffsets: offsets)
-    }
-
-    private func onMove(source: IndexSet, destination: Int) {
-        cities.move(fromOffsets: source, toOffset: destination)
+        api.cities.remove(atOffsets: offsets)
     }
     
+    /// This function shows the EditButton when available
     private var editButton: some View {
-        if $cities.isEmpty {
+        if $api.cities.isEmpty {
             return AnyView(EmptyView())
         } else {
             return AnyView(EditButton())
         }
     }
 
+    /// This function shows the button for adding when available
     private var addButton: some View {
         switch editMode {
         case .inactive:
@@ -71,9 +63,10 @@ struct WeatherView : View {
         }
     }
 
+    
+    /// This function is called when Add button is tapped
     func onAdd() {
         isAddCitySheetOpen.toggle()
-        // To be implemented in the next section
     }
 
 }
