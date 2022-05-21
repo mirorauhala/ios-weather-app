@@ -10,10 +10,9 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject var api = OpenWeatherMap(unit: OpenWeatherMap.TemperatureFormat.Celsius)
     
-    
     var body: some View {
         TabView {
-            WeatherView(cities: $api.cities, unit: $api.unit)
+            WeatherView(api: api, unit: $api.unit)
                 .tabItem {
                     Image(systemName: "sun.min")
                     Text("Weather")
@@ -25,10 +24,9 @@ struct ContentView: View {
                     Text("Settings")
                 }
         }
-    
-        
     }
     
+    /// This function is called when WeatherView appears
     private func reloadWeather() {
         api.reloadWeather()
     }
