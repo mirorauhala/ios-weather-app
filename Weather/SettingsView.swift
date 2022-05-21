@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct SettingsView : View {
-    @State private var selectedFormat: String = ""
+    @ObservedObject var api: OpenWeatherMap
     
     var body : some View {
         NavigationView {
             List {
-                Picker("Format", selection: $selectedFormat) {
-                    Text("Celsius").tag("metric")
-                    Text("Fahrenheit").tag("imperial")
-                    Text("Kelvin").tag("")
+                Picker("Format", selection: $api.unit) {
+                    Text("Celsius").tag(OpenWeatherMap.TemperatureFormat.Celsius)
+                    Text("Fahrenheit").tag(OpenWeatherMap.TemperatureFormat.Fahrenheit)
+                    Text("Kelvin").tag(OpenWeatherMap.TemperatureFormat.Kelvin)
                 }
             }.navigationTitle("Settings")
         }
