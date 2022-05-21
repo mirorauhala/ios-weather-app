@@ -13,19 +13,32 @@ struct WeatherView : View {
     @State private var search = ""
     @State private var searchResults: [City] = []
 
-    @Binding var cities : [City]
+    @Binding var cities: [City]
+    @Binding var unit: OpenWeatherMap.TemperatureFormat
     
     var body : some View {
         NavigationView {
-            List {
-                ForEach($cities) {city in
-                    CityCard(city: city)
+            VStack {
+                if $cities.isEmpty {
+                    Text("Add a city")
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color(.systemGroupedBackground))
+                } else {
+                    List {
+                        ForEach($cities) {city in
+                            CityCard(city: city, unit: $unit)
+                        }
+                        .onDelete(perform: onDelete)
+                        .onMove(perform: onMove)
+                    }
+                    
+                    
                 }
-                .onDelete(perform: onDelete)
-                .onMove(perform: onMove)
             }
-            .navigationBarItems(leading: EditButton(), trailing: addButton)
+            
             .navigationBarTitle("Weather")
+            .navigationBarItems(leading: editButton, trailing: addButton)
             .environment(\.editMode, $editMode)
             .sheet(isPresented: $isAddCitySheetOpen) {
                 SearchSheet(search: $search, searchResults: $searchResults)
@@ -39,6 +52,14 @@ struct WeatherView : View {
 
     private func onMove(source: IndexSet, destination: Int) {
         cities.move(fromOffsets: source, toOffset: destination)
+    }
+    
+    private var editButton: some View {
+        if $cities.isEmpty {
+            return AnyView(EmptyView())
+        } else {
+            return AnyView(EditButton())
+        }
     }
 
     private var addButton: some View {
