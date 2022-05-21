@@ -8,21 +8,18 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var cities: [City] = [
-        City(id: 1, name: "Tampere", temp: 22),
-        City(id: 2, name: "Helsinki", temp: 10),
-        City(id: 3, name: "Oulu", temp: -10)
-    ]
+    @ObservedObject var api = OpenWeatherMap(unit: OpenWeatherMap.TemperatureFormat.Celsius)
+    
     
     var body: some View {
         TabView {
-            WeatherView(cities: $cities)
+            WeatherView(cities: $api.cities, unit: $api.unit)
                 .tabItem {
                     Image(systemName: "sun.min")
                     Text("Weather")
-                }
+                }.onAppear(perform: reloadWeather)
             
-            SettingsView()
+            SettingsView(api: api)
                 .tabItem {
                     Image(systemName: "gear")
                     Text("Settings")
@@ -30,5 +27,9 @@ struct ContentView: View {
         }
     
         
+    }
+    
+    private func reloadWeather() {
+        api.reloadWeather()
     }
 }
